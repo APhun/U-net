@@ -4,16 +4,25 @@ from keras.layers.convolutional import *
 from keras.layers.pooling import *
 from keras.models import *
 from keras.optimizers import *
+from keras.losses import *
 import os
 
-
 x_train = np.load("x_train.npy")
-
 y_train = np.load("y_train.npy")
 
 x_test = np.load("x_test.npy")
-
 y_test = np.load("y_test.npy")
+
+x_train = x_train.astype('float32')
+x_train /= 255
+y_train = y_train.astype('float32')
+y_train /= 255
+
+x_test = x_test.astype('float32')
+x_test /= 255
+y_test = y_test.astype('float32')
+y_test /= 255
+
 
 
 inputs = Input((128,128,1))
@@ -117,6 +126,6 @@ model.compile(optimizer = Adadelta(lr=1.0, rho=0.95, epsilon=1e-06), loss = 'bin
 model.summary()
 
 
-model.fit(x_train,y_train,epochs=5,batch_size=16)
-score = model.evaluate(x_test, y_test, batch_size=16)
+model.fit(x_train,y_train,epochs=10,batch_size=5)
+score = model.evaluate(x_test, y_test, batch_size=5)
 print(score)
