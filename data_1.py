@@ -26,17 +26,24 @@ for root, dirs, files in os.walk(dir):
         label[label != 0] = 255 # 二值化
         x_train[count] = img
         y_train[count] = label
+        print(x_train)
         count += 1
-#np.save('x_train.npy',x_train)
-#np.save('y_train.npy',y_train)
 print('complete')
 print('-'*30)
 
-print('start augmenting...')
-x_train[:,:,2] = y_train[:,:,0] #将标签作为训练集的一个通道
-print(x_train[:,:,2])
 
-'''
+print('start augmenting...')
+ #将标签作为训练集的一个通道
+x_train[:,:,:,2] = y_train[:,:,:,0]
+# print(x_train[:,:,:,2])
+#np.save('x_train.npy',x_train)
+#np.save('y_train.npy',y_train)
+
+for count in range(train_num):
+    img = array_to_img(x_train[count])
+    img.save("D:\dataset\data-augmentation\\raw\\"+str(count)+".bmp")
+
+
 img_generator = ImageDataGenerator(rotation_range=0.2,
 							        width_shift_range=0.05,
 							        height_shift_range=0.05,
@@ -45,9 +52,8 @@ img_generator = ImageDataGenerator(rotation_range=0.2,
 							        horizontal_flip=True,
 							        fill_mode='nearest')
 
-for count in range(train_num):
-    img = array_to_img(x_train[count])
-    img.save("D:\dataset\data-augmentation\\raw\\"+str(count)+".bmp")
+#x_train = np.load("x_train.npy")
+#print(x_train[:,:,2])
 
 i = 0 # 数据增强
 for num in range(train_num):
@@ -60,8 +66,8 @@ for num in range(train_num):
         if i >= 5:
             i = 0
             break
-'''
 
+'''
 dir ="D:\dataset\data-augmentation\\unsplited"
 img_num = 0
 for num in os.listdir(dir): #fn 表示的是文件名
@@ -79,7 +85,7 @@ for root, dirs, files in os.walk(dir):
         img = load_img(os.path.join(root,file))
         img = img_to_array(img)
         
-        '''
+        
         label = img[:,:,2]
         new_img[count] = img
         new_label[count] = label
@@ -88,7 +94,7 @@ for root, dirs, files in os.walk(dir):
         label = array_to_img(new_label[count])
         label.save("D:\dataset\data-augmentation\label\\"+str(count)+".bmp")
         count += 1
-        '''
+        
 
 
 
@@ -110,3 +116,4 @@ np.save('x_test.npy',x_test)
 np.save('y_test.npy',y_test)
 print('complete')
 print('-'*30)
+'''
