@@ -26,7 +26,7 @@ for root, dirs, files in os.walk(dir):
         label[label != 0] = 255 # 二值化
         x_train[count] = img
         y_train[count] = label
-        print(x_train)
+        #print(x_train)
         count += 1
 print('complete')
 print('-'*30)
@@ -63,18 +63,18 @@ for num in range(train_num):
                        save_format='bmp'
                        ):
         i += 1
-        if i >= 5:
+        if i >= 30:
             i = 0
             break
 
-'''
+
 dir ="D:\dataset\data-augmentation\\unsplited"
 img_num = 0
 for num in os.listdir(dir): #fn 表示的是文件名
         img_num += 1
 
-new_img = np.ndarray((train_num,128,128,3), dtype=np.uint8)
-new_label = np.ndarray((train_num,128,128,1), dtype=np.uint8)
+new_img = np.ndarray((img_num,128,128,1), dtype=np.uint8)
+new_label = np.ndarray((img_num,128,128,1), dtype=np.uint8)
 
 count = 0
 for root, dirs, files in os.walk(dir):
@@ -84,19 +84,27 @@ for root, dirs, files in os.walk(dir):
         # label = load_img("D:\dataset\data-train\label\\"+name+"_anno.bmp",grayscale = True,target_size=(128,128))
         img = load_img(os.path.join(root,file))
         img = img_to_array(img)
-        
-        
         label = img[:,:,2]
-        new_img[count] = img
-        new_label[count] = label
-        img = array_to_img(new_img[count])
-        img.save("D:\dataset\data-augmentation\img\\"+str(count)+".bmp")
-        label = array_to_img(new_label[count])
-        label.save("D:\dataset\data-augmentation\label\\"+str(count)+".bmp")
-        count += 1
         
+        label = label.reshape((128,128,1))
+        
+        new_label[count] = label
+        label = array_to_img(label)
+        label.save("D:\dataset\data-augmentation\label\\"+str(count)+".bmp")
+        
+        img[:,:,2] = 0
+                
+        img = array_to_img(img)
+        img.save("D:\dataset\data-augmentation\img\\"+str(count)+".bmp")
+        img = load_img("D:\dataset\data-augmentation\img\\"+str(count)+".bmp",grayscale=True)
+        img = img_to_array(img)
+        
+        new_img[count] = img
+        #print(new_img[count].shape)
+        count += 1
 
-
+np.save('x_train.npy',new_img)
+np.save('y_train.npy',new_label)
 
 count = 0
 print("loading test data...")
@@ -116,4 +124,3 @@ np.save('x_test.npy',x_test)
 np.save('y_test.npy',y_test)
 print('complete')
 print('-'*30)
-'''
