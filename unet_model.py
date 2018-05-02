@@ -1,19 +1,25 @@
 #from data import *
+import keras
 from keras.layers import *
 from keras.layers.convolutional import *
 from keras.layers.pooling import *
 from keras.models import *
 from keras.optimizers import *
+from keras.callbacks import ModelCheckpoint, LearningRateScheduler
 import os
 
 
 x_train = np.load("x_train.npy")
-
 y_train = np.load("y_train.npy")
 
-x_test = np.load("x_test.npy")
+#x_test = np.load("x_test.npy")
+#y_test = np.load("y_test.npy")
 
-y_test = np.load("y_test.npy")
+x_train = x_train/255
+y_train[y_train != 0] = 1
+
+#x_test = x_test/255
+#y_test[y_test != 0] = 1
 
 
 inputs = Input((512,512,1))
@@ -106,16 +112,15 @@ conv9 = Conv2D(2, 3, activation = 'relu', padding = 'same', kernel_initializer =
 conv10 = Conv2D(1, 1, activation = 'sigmoid')(conv9)
 #print ("conv10 shape:",conv10.shape)
 
-model = Model(inputs=inputs, outputs = conv1)
+model = Model(inputs=inputs, outputs = conv10)
 
-'''
-model = Sequential()
-model.add(Dense(1, input_shape=(512,512,1), activation='relu'))
-'''
+
 model.compile(optimizer = Adam(lr = 1e-4), loss = 'binary_crossentropy', metrics = ['accuracy'])
 model.summary()
 
 
-model.fit(x_train,y_train,epochs=5,batch_size=3)
-score = model.evaluate(x_test, y_test, batch_size=3)
-print(score)
+model.fit(x_train,y_train,epochs=20,batch_size=10)
+#score = model.evaluate(x_test, y_test, batch_size=1)
+#print(score)
+
+model.save("demo.h5")
